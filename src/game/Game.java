@@ -1,21 +1,33 @@
 package game;
 import java.util.Scanner;
+import java.util.ArrayList;
 import java.util.Random;
 
+import pokemon.Move;
+import pokemon.MoveDamage;
 import pokemon.Pokemon;
 
 public class Game {
     public static Pokemon pokemons[];
-    protected Pokemon playerPokemon;
-    protected Pokemon enemyPokemon;
+    public Pokemon playerPokemon;
+    public Pokemon enemyPokemon;
 
     private Random random = new Random();
     
     public void initPokemons(){
         pokemons = new Pokemon[3];
-        pokemons[0] = new Pokemon("Charizard");
-        pokemons[1] = new Pokemon("Blastoise");
-        pokemons[2] = new Pokemon("Venusaur");
+        
+        ArrayList<Move> pokemonMoves0 = new ArrayList<>();
+        pokemonMoves0.add(new MoveDamage("Flamethrower", 75, 110));
+        pokemons[0] = new Pokemon("Charizard", 100, 25, 25, 25, pokemonMoves0);
+
+        ArrayList<Move> pokemonMoves1 = new ArrayList<>();
+        pokemonMoves1.add(new MoveDamage("Idropulsar", 75, 110));
+        pokemons[1] = new Pokemon("Blastoise", 100, 25, 25, 25, pokemonMoves1);
+
+        ArrayList<Move> pokemonMoves2 = new ArrayList<>();
+        pokemonMoves2.add(new MoveDamage("Leaf blade", 75, 110));
+        pokemons[2] = new Pokemon("Venusaur", 100, 25, 25, 25, pokemonMoves2);
     }
 
     public void run(){

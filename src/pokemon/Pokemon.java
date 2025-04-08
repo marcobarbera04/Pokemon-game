@@ -1,5 +1,7 @@
 package pokemon;
 
+import java.util.ArrayList;
+
 public class Pokemon{
     private String name;
     private double maxHp;
@@ -7,12 +9,21 @@ public class Pokemon{
     private double attack;
     private double defense;
     private double speed;
-    private Move moves[];
+    public static final int MAX_MOVES = 2;
+    private ArrayList<Move> moves;
 
-    public Pokemon(String name){
-        this.name = name;
+    public Pokemon(String name, double maxHp, double attack, double defense, double speed, ArrayList<Move> moves){
+        setName(name);
+        setMaxHp(maxHp);
+        this.hp = this.maxHp;
+        setAttack(attack);
+        setDefense(defense);
+        setSpeed(speed);
+        this.moves = new ArrayList<>();
+        setMoves(moves);
     }
 
+    // getter methods
     public String getName() {
         return name;
     }
@@ -31,23 +42,52 @@ public class Pokemon{
     public double getSpeed() {
         return speed;
     }
+    public ArrayList<Move> getMoves(){
+        return this.moves;
+    }
 
-    public void setNomePokemon(String name) {
-        this.name = name;
+    // setter methods
+    public void setName(String name) {
+        if(name != null){
+            this.name = name;
+        }
     }
     public void setMaxHp(double maxHp) {
-        this.maxHp = maxHp;
+        if(maxHp > 0){
+            this.maxHp = maxHp;
+        }
     }
     public void setHp(double hp) {
         this.hp = hp;
     }
     public void setAttack(double attack) {
-        this.attack = attack;
+        if(attack > 0){
+            this.attack = attack;
+        }
     }
     public void setDefense(double defense) {
-        this.defense = defense;
+        if(defense > 0){
+            this.defense = defense;
+        }
     }
     public void setSpeed(double speed) {
-        this.speed = speed;
+        if(speed > 0){
+            this.speed = speed;
+        }
     }
+    public void setMove(Move move){
+        if(move != null){
+            moves.add(move);
+        }
+    }
+    public void setMoves(ArrayList<Move> moves){
+        if(moves.isEmpty()){
+            return;
+        }
+
+        for(int i = 0; i < moves.size(); i++){  
+            setMove(moves.get(i));   
+        }
+    }
+
 }
