@@ -23,6 +23,19 @@ public class Pokemon{
         setMoves(moves);
     }
 
+    @Override
+    public String toString(){
+        return this.getName();
+    }
+
+    public void showMoves(){
+        ArrayList<Move> moves = getMoves();
+        for(int i = 0; i < moves.size(); i++){
+            Move move = moves.get(i);
+            System.out.println(i + ") " + move.getName());
+        }
+    }
+
     // getter methods
     public String getName() {
         return name;

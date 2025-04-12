@@ -11,6 +11,11 @@ public abstract class Move{
         setPrecision(precision);
     }
 
+    @Override
+    public String toString(){
+        return this.getName();
+    }
+
     // getter methods
     public String getName(){
         return name;

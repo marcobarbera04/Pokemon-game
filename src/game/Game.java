@@ -12,6 +12,9 @@ public class Game {
     public Pokemon playerPokemon;
     public Pokemon enemyPokemon;
 
+    public int playerPokemonIndex;
+    public int enemyPokemonIndex;
+
     private Random random = new Random();
     
     public void initPokemons(){
@@ -30,6 +33,14 @@ public class Game {
         pokemons[2] = new Pokemon("Venusaur", 100, 25, 25, 25, pokemonMoves2);
     }
 
+    public void match(){
+        System.out.println("------------------------------------");
+        System.out.println(enemyPokemon + ": " + enemyPokemon.getHp() + " hp\n");
+        System.out.println(playerPokemon + ": " + playerPokemon.getHp() + " hp");
+        playerPokemon.showMoves();
+        System.out.println("------------------------------------");
+    }
+
     public void run(){
         this.initPokemons();
 
@@ -42,7 +53,7 @@ public class Game {
         // choosing player pokemon
         Scanner scanner = new Scanner(System.in);
         boolean isValid = false;
-        int playerPokemonIndex = -1;
+        playerPokemonIndex = -1;
         while(!isValid){
             String choose = scanner.nextLine();
             for(int i = 0; i < pokemons.length; i++){
@@ -61,15 +72,16 @@ public class Game {
         scanner.close();
 
         // choosing randomly enemy pokemon (different than the player)
-        int enemyPokemonIndex = -1;
+        enemyPokemonIndex = -1;
         do{
             enemyPokemonIndex = random.nextInt(pokemons.length);
         }while(enemyPokemonIndex == playerPokemonIndex);
         System.out.println("Your enemy choose " + pokemons[enemyPokemonIndex].getName());
-        
-        
 
-        // match() loop
+        playerPokemon = pokemons[playerPokemonIndex];
+        enemyPokemon = pokemons[enemyPokemonIndex];
+
+        match();
         // ask to play again 
         // exit
     }
