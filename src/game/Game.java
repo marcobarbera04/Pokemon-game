@@ -24,7 +24,7 @@ public class Game {
         pokemonMoves0.add(new MoveDamage("Tackle", 100, 50));
         pokemonMoves0.add(new MoveDamage("foo", 100, 0));
         pokemonMoves0.add(new MoveDamage("foo", 100, 0));
-        pokemons[0] = new Pokemon("Charizard", 350, 25, 25, 25, pokemonMoves0);
+        pokemons[0] = new Pokemon("Charizard", 350, 25, 25, 1, pokemonMoves0);
 
         ArrayList<Move> pokemonMoves1 = new ArrayList<>();
         pokemonMoves1.add(new MoveDamage("Idropulsar", 75, 110));
@@ -74,6 +74,18 @@ public class Game {
                 executeMove(enemyPokemon, playerPokemon, enemyMove);
                 if(!Pokemon.isAlive(playerPokemon)){
                     setHasPlayerWon(false);
+                    continue;
+                }
+            }
+            else if(fastest == enemyPokemon){
+                executeMove(enemyPokemon, playerPokemon, enemyMove);
+                if(!Pokemon.isAlive(playerPokemon)){
+                    setHasPlayerWon(false);
+                    continue;
+                }
+                executeMove(playerPokemon, enemyPokemon, playerMove);
+                if(!Pokemon.isAlive(enemyPokemon)){
+                    setHasPlayerWon(true);
                     continue;
                 }
             }
