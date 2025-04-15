@@ -1,6 +1,7 @@
 package game;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Random;
 
 import pokemon.Move;
@@ -16,6 +17,8 @@ public class Game {
     public int enemyPokemonIndex;
 
     private Random random = new Random();
+
+    Scanner scanner;
     
     public void initPokemons(){
         pokemons = new Pokemon[3];
@@ -33,25 +36,40 @@ public class Game {
         pokemons[2] = new Pokemon("Venusaur", 100, 25, 25, 25, pokemonMoves2);
     }
 
-    public void match(){
-        System.out.println("------------------------------------");
-        System.out.println(enemyPokemon + ": " + enemyPokemon.getHp() + " hp\n");
-        System.out.println(playerPokemon + ": " + playerPokemon.getHp() + " hp");
-        playerPokemon.showMoves();
-        System.out.println("------------------------------------");
-    }
-
     public void run(){
         this.initPokemons();
+        scanner = new Scanner(System.in);
 
+        playerChoosePokemon();  // let the player choose his pokemon
+        enemyChoosePokemon();   // choosing randomly enemy pokemon (different than the player)
+
+        match();
+        scanner.close();
+        // ask to play again 
+        // exit
+    }
+
+    public void match(){
+        while (playerPokemon.getHp() > 0 && enemyPokemon.getHp() > 0) {
+            System.out.println("------------------------------------");
+            System.out.println(enemyPokemon + ": " + enemyPokemon.getHp() + " hp\n");
+            System.out.println(playerPokemon + ": " + playerPokemon.getHp() + " hp");
+            playerPokemon.showMoves();
+            System.out.println("------------------------------------");
+            playerChooseMove();
+            simulateWait();     // simulate enemy choosing a move 
+            enemyChooseMove();
+            simulateWait();
+        }
+    }
+
+    public void playerChoosePokemon(){
         System.out.print("Choose a pokemon between: ");
         for(int i = 0; i < pokemons.length; i++){
             System.out.print(pokemons[i].getName() + ", ");
         }
         System.out.println("write the name of the pokemon to choose it.");
-
         // choosing player pokemon
-        Scanner scanner = new Scanner(System.in);
         boolean isValid = false;
         playerPokemonIndex = -1;
         while(!isValid){
@@ -69,20 +87,59 @@ public class Game {
                 System.out.println("You wrote an invalid name");
             }
         }
-        scanner.close();
+        playerPokemon = pokemons[playerPokemonIndex];
+    }
 
-        // choosing randomly enemy pokemon (different than the player)
+    public void enemyChoosePokemon(){
         enemyPokemonIndex = -1;
         do{
             enemyPokemonIndex = random.nextInt(pokemons.length);
         }while(enemyPokemonIndex == playerPokemonIndex);
         System.out.println("Your enemy choose " + pokemons[enemyPokemonIndex].getName());
-
-        playerPokemon = pokemons[playerPokemonIndex];
         enemyPokemon = pokemons[enemyPokemonIndex];
+    }
 
-        match();
-        // ask to play again 
-        // exit
+    public void playerChooseMove(){
+        int move = -1;
+        do {
+            System.out.println("Choose a move [0, " + (playerPokemon.getMoves().size()-1) + "]");
+            try{
+                move = scanner.nextInt();
+            }catch(InputMismatchException exception){
+                System.out.println("[ERROR]: insert a valid integer");
+                scanner.nextLine();  // consume the invalid character to avoid infinite loop
+            }
+        }while(move < 0 || move > playerPokemon.getMoves().size()-1);
+        System.out.println("You choose the move: " + playerPokemon.getMoves().get(move));
+    }
+
+    public void enemyChooseMove(){
+        int move = random.nextInt(0, enemyPokemon.getMoves().size());
+        System.out.println("Your enemy choose the move: " + enemyPokemon.getMoves().get(move));
+    }
+
+    public Pokemon getFastestPokemon(){
+        double playerSpeed = playerPokemon.getSpeed();
+        double enemySpeed = enemyPokemon.getSpeed();
+        if(enemySpeed > playerSpeed){
+            return enemyPokemon;
+        }
+        else{
+            return playerPokemon;
+        }
+    }
+
+    public void simulateWait(){
+        try{
+            System.out.print(".");
+            Thread.sleep(1000); 
+            System.out.print(".");
+            Thread.sleep(1000);
+            System.out.print(".");
+            Thread.sleep(1000);
+            System.out.println(); 
+        }catch(InterruptedException exception){
+            System.out.println("[ERROR]: sleep interrupted");
+        }
     }
 }
