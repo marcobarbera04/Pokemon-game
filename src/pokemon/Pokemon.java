@@ -1,6 +1,7 @@
 package pokemon;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Pokemon{
     private String name;
@@ -32,8 +33,9 @@ public class Pokemon{
         ArrayList<Move> moves = getMoves();
         for(int i = 0; i < moves.size(); i++){
             Move move = moves.get(i);
-            System.out.println(i + ") " + move.getName());
+            System.out.print(i + ") " + move.getName() + "\t\t");
         }
+        System.out.println();
     }
 
     // getter methods
@@ -100,6 +102,40 @@ public class Pokemon{
 
         for(int i = 0; i < moves.size(); i++){  
             setMove(moves.get(i));   
+        }
+    }
+
+    public static double calculateDamage(Pokemon attaccking, Pokemon defending, MoveDamage move){
+        double attack = attaccking.getAttack();
+        double defense = defending.getDefense();
+        double power = move.getPower();
+        double damage = ((attack * power) / defense) * 0.5;
+        return damage;
+    }
+
+    public static boolean doesHit(Move move){
+        double random = new Random().nextDouble(0, 101);
+        double precision = move.getPrecision();
+        return random < precision;
+    }
+
+    public static boolean isAlive(Pokemon pokemon){
+        if(pokemon.getHp() <= 0){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    public static Pokemon getFastestPokemon(Pokemon p1, Pokemon p2){
+        double p1Speed = p1.getSpeed();
+        double p2Speed = p2.getSpeed();
+        if(p2Speed > p1Speed){
+            return p2;
+        }
+        else{
+            return p1;
         }
     }
 

@@ -4,36 +4,35 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Random;
 
-import pokemon.Move;
-import pokemon.MoveDamage;
-import pokemon.Pokemon;
+import pokemon.*;
 
 public class Game {
     public static Pokemon pokemons[];
-    public Pokemon playerPokemon;
-    public Pokemon enemyPokemon;
-
-    public int playerPokemonIndex;
-    public int enemyPokemonIndex;
-
+    private Pokemon playerPokemon;
+    private Pokemon enemyPokemon;
+    private int playerPokemonIndex;
+    private int enemyPokemonIndex;
     private Random random = new Random();
-
-    Scanner scanner;
+    private Scanner scanner;
+    private boolean hasPlayerWon;
     
     public void initPokemons(){
         pokemons = new Pokemon[3];
         
         ArrayList<Move> pokemonMoves0 = new ArrayList<>();
         pokemonMoves0.add(new MoveDamage("Flamethrower", 75, 110));
-        pokemons[0] = new Pokemon("Charizard", 100, 25, 25, 25, pokemonMoves0);
+        pokemonMoves0.add(new MoveDamage("Tackle", 100, 50));
+        pokemonMoves0.add(new MoveDamage("foo", 100, 0));
+        pokemonMoves0.add(new MoveDamage("foo", 100, 0));
+        pokemons[0] = new Pokemon("Charizard", 350, 25, 25, 25, pokemonMoves0);
 
         ArrayList<Move> pokemonMoves1 = new ArrayList<>();
         pokemonMoves1.add(new MoveDamage("Idropulsar", 75, 110));
-        pokemons[1] = new Pokemon("Blastoise", 100, 25, 25, 25, pokemonMoves1);
+        pokemons[1] = new Pokemon("Blastoise", 350, 25, 25, 25, pokemonMoves1);
 
         ArrayList<Move> pokemonMoves2 = new ArrayList<>();
         pokemonMoves2.add(new MoveDamage("Leaf blade", 75, 110));
-        pokemons[2] = new Pokemon("Venusaur", 100, 25, 25, 25, pokemonMoves2);
+        pokemons[2] = new Pokemon("Venusaur", 350, 25, 25, 25, pokemonMoves2);
     }
 
     public void run(){
@@ -43,23 +42,42 @@ public class Game {
         playerChoosePokemon();  // let the player choose his pokemon
         enemyChoosePokemon();   // choosing randomly enemy pokemon (different than the player)
 
-        match();
+        match();                // match loop
+        if(hasPlayerWon){
+            System.out.println("You have won");
+        }else{
+            System.out.println("You have lost");
+        }
+        simulateWait();
+        ClearConsole.clear();
         scanner.close();
-        // ask to play again 
-        // exit
     }
 
     public void match(){
         while (playerPokemon.getHp() > 0 && enemyPokemon.getHp() > 0) {
-            System.out.println("------------------------------------");
-            System.out.println(enemyPokemon + ": " + enemyPokemon.getHp() + " hp\n");
-            System.out.println(playerPokemon + ": " + playerPokemon.getHp() + " hp");
+            System.out.println("----------------------------------------------------------------------------------");
+            System.out.println(enemyPokemon + ": " + enemyPokemon.getHp() + " hp\n\n\n\n\n");
+            System.out.println("\t\t\t\t\t\t\t\t" + playerPokemon + ": " + playerPokemon.getHp() + " hp");
             playerPokemon.showMoves();
-            System.out.println("------------------------------------");
-            playerChooseMove();
-            simulateWait();     // simulate enemy choosing a move 
-            enemyChooseMove();
-            simulateWait();
+            System.out.println("----------------------------------------------------------------------------------");
+
+            Move playerMove = playerChooseMove();   
+            Move enemyMove = enemyChooseMove();
+
+            Pokemon fastest = Pokemon.getFastestPokemon(playerPokemon, enemyPokemon);
+            if(fastest == playerPokemon){
+                executeMove(playerPokemon, enemyPokemon, playerMove);
+                if(!Pokemon.isAlive(enemyPokemon)){
+                    setHasPlayerWon(true);
+                    continue;
+                }
+                executeMove(enemyPokemon, playerPokemon, enemyMove);
+                if(!Pokemon.isAlive(playerPokemon)){
+                    setHasPlayerWon(false);
+                    continue;
+                }
+            }
+            ClearConsole.clear();
         }
     }
 
@@ -99,7 +117,7 @@ public class Game {
         enemyPokemon = pokemons[enemyPokemonIndex];
     }
 
-    public void playerChooseMove(){
+    public Move playerChooseMove(){
         int move = -1;
         do {
             System.out.println("Choose a move [0, " + (playerPokemon.getMoves().size()-1) + "]");
@@ -110,24 +128,41 @@ public class Game {
                 scanner.nextLine();  // consume the invalid character to avoid infinite loop
             }
         }while(move < 0 || move > playerPokemon.getMoves().size()-1);
-        System.out.println("You choose the move: " + playerPokemon.getMoves().get(move));
+        //System.out.println("You choose the move: " + playerPokemon.getMoves().get(move));
+        return playerPokemon.getMoves().get(move);
     }
 
-    public void enemyChooseMove(){
+    public Move enemyChooseMove(){
         int move = random.nextInt(0, enemyPokemon.getMoves().size());
-        System.out.println("Your enemy choose the move: " + enemyPokemon.getMoves().get(move));
+        //System.out.println("Your enemy choose the move: " + enemyPokemon.getMoves().get(move));
+        return enemyPokemon.getMoves().get(move);
     }
 
-    public Pokemon getFastestPokemon(){
-        double playerSpeed = playerPokemon.getSpeed();
-        double enemySpeed = enemyPokemon.getSpeed();
-        if(enemySpeed > playerSpeed){
-            return enemyPokemon;
+    public void executeMove(Pokemon attacking, Pokemon defending, Move move){
+        if(move instanceof MoveDamage){
+            MoveDamage moveDamage = (MoveDamage)move;
+            attack(attacking, defending, moveDamage);
+        }
+        else if(move instanceof MoveStatus){
+            MoveStatus moveStatus = (MoveStatus)move;
+            attackStatus(attacking, defending, moveStatus);
+        }
+    }
+
+    public void attack(Pokemon attacking, Pokemon defending, MoveDamage move){
+        if(Pokemon.doesHit(move)){
+            double damage = Pokemon.calculateDamage(attacking, defending, move);
+            defending.setHp(defending.getHp() - damage);
+            System.out.println(attacking.getName() + " successfully uses " + move.getName());
+            simulateWait();
         }
         else{
-            return playerPokemon;
+            System.out.println(attacking.getName() + " failed to use " + move.getName());
+            simulateWait();
         }
     }
+
+    public void attackStatus(Pokemon attacking, Pokemon defending, MoveStatus move){}
 
     public void simulateWait(){
         try{
@@ -141,5 +176,12 @@ public class Game {
         }catch(InterruptedException exception){
             System.out.println("[ERROR]: sleep interrupted");
         }
+    }
+
+    public boolean getHasPlayerWon(){
+        return hasPlayerWon;
+    }
+    public void setHasPlayerWon(boolean hasPlayerWon){
+        this.hasPlayerWon = hasPlayerWon;
     }
 }
