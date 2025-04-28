@@ -24,20 +24,6 @@ public class Pokemon{
         setMoves(moves);
     }
 
-    @Override
-    public String toString(){
-        return this.getName();
-    }
-
-    public void showMoves(){
-        ArrayList<Move> moves = getMoves();
-        for(int i = 0; i < moves.size(); i++){
-            Move move = moves.get(i);
-            System.out.print(i + ") " + move.getName() + "\t\t");
-        }
-        System.out.println();
-    }
-
     // getter methods
     public String getName() {
         return name;
@@ -105,6 +91,32 @@ public class Pokemon{
         }
     }
 
+    @Override
+    public String toString(){
+        return this.getName();
+    }
+
+    /**
+     * This method print every moves that a pokemon has
+     */
+    public void showMoves(){
+        ArrayList<Move> moves = getMoves();
+        for(int i = 0; i < moves.size(); i++){
+            Move move = moves.get(i);
+            System.out.print(i + ") " + move.getName() + "\t\t");
+        }
+        System.out.println();
+    }
+
+    /**
+     * This static method calculate how much damage a move should inflict.
+     * The calculation is based on the attacking pokemon's attack,
+     * move's power and defending pokemon's defense
+     * @param   attaccking  the attacking pokemon    
+     * @param   defending   the defending pokemon
+     * @param   move        the used move
+     * @return              the value of damage inflicted by the move
+     */
     public static double calculateDamage(Pokemon attaccking, Pokemon defending, MoveDamage move){
         double attack = attaccking.getAttack();
         double defense = defending.getDefense();
@@ -113,12 +125,24 @@ public class Pokemon{
         return damage;
     }
 
+    /**
+     * This static method check if a move does hit based on its precision
+     * @param   move    the executed move  
+     * @return          a boolean value, true (it does hit), false (it does not hit)
+     */
     public static boolean doesHit(Move move){
         double random = new Random().nextDouble(0, 101);
         double precision = move.getPrecision();
         return random < precision;
     }
 
+    /**
+     * This static method check if a pokemon is alive using its health,
+     * If the pokemon's health is less or equal 0 it return false,
+     * if the pokemon's health is greater than 0 it return true. 
+     * @param   pokemon the pokemon that is going to be checked
+     * @return          a boolean value, true (pokemon is alive), false (pokemon is not alive)
+     */
     public static boolean isAlive(Pokemon pokemon){
         if(pokemon.getHp() <= 0){
             return false;
@@ -128,6 +152,12 @@ public class Pokemon{
         }
     }
 
+    /**
+     * This static method compare two pokemons and return the faster one
+     * @param   p1  first pokemon to be compared
+     * @param   p2  second pokemon to be compared
+     * @return      the faster pokemon
+     */
     public static Pokemon getFastestPokemon(Pokemon p1, Pokemon p2){
         double p1Speed = p1.getSpeed();
         double p2Speed = p2.getSpeed();
