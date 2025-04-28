@@ -1,14 +1,19 @@
 package pokemon;
 
 public abstract class Move{
-    private String name;
-    private double precision;
-
-    public Move(){}
+    final private String name;
+    final private double precision;
 
     public Move(String name, double precision){
-        setName(name);
-        setPrecision(precision);
+        if(name == null){
+            throw new RuntimeException("[ERROR]: Move name cannot be null");
+        }
+        if(precision <= 0){
+            throw new RuntimeException("[ERROR]: Move precision must be positive (move name: " + name + ")");
+        }
+
+        this.name = name;
+        this.precision = precision;
     }
 
     @Override
@@ -22,17 +27,5 @@ public abstract class Move{
     }
     public double getPrecision(){
         return precision;
-    }
-
-    // setter methods
-    public void setPrecision(double precision){
-        if(precision > 0){
-            this.precision = precision;
-        }
-    }
-    public void setName(String name){
-        if(name != null){
-            this.name = name;
-        }
     }
 }
