@@ -1,5 +1,7 @@
 package game;
-
+/**
+ * This class is used to clear the console regardless of the operating system
+ */
 public class ClearConsole {
     public static void clear(){
         try{
