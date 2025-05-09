@@ -126,14 +126,14 @@ public class Pokemon{
     }
 
     /**
-     * This static method check if a move does hit based on its precision
+     * This static method check if a move does hit based on its accuracy
      * @param   move    the executed move  
      * @return          a boolean value, true (it does hit), false (it does not hit)
      */
     public static boolean doesHit(Move move){
         double random = new Random().nextDouble(0, 101);
-        double precision = move.getPrecision();
-        return random < precision;
+        double accuracy = move.getAccuracy();
+        return random < accuracy;
     }
 
     /**

@@ -5,8 +5,8 @@ public class MoveStatus extends Move {
     final double percentage;      // The percentage that will increase/decrease the statistic
     final boolean self;           // Flag that tell if the pokemon target is the one that execute the move    
 
-    public MoveStatus(String name, double precision, Statistic statistic, double percentage, boolean self){
-        super(name, precision);
+    public MoveStatus(String name, double accuracy, Statistic statistic, double percentage, boolean self){
+        super(name, accuracy);
 
         if(statistic == null){
             throw new RuntimeException("[ERROR]: MoveStatus statistic is invalid (move name: " + name + ")");
