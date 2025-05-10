@@ -1,4 +1,4 @@
-package pokemon;
+package shared.pokemon;
 
 public class MoveDamage extends Move {
     final private double power;

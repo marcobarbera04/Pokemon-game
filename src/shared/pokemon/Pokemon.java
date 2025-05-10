@@ -1,4 +1,4 @@
-package pokemon;
+package shared.pokemon;
 
 import java.util.ArrayList;
 import java.util.Random;

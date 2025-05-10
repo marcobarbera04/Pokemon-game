@@ -1,4 +1,4 @@
-package pokemon;
+package shared.pokemon;
 
 public abstract class Move{
     final private String name;

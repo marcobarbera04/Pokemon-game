@@ -1,4 +1,4 @@
-package pokemon;
+package shared.pokemon;
 
 public class MoveStatus extends Move {
     final Statistic statistic;    // The statistic that will be affected by the move

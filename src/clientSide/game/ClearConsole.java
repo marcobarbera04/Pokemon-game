@@ -1,4 +1,4 @@
-package game;
+package clientSide.game;
 /**
  * This class is used to clear the console regardless of the operating system
  */

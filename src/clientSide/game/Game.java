@@ -1,10 +1,11 @@
-package game;
+package clientSide.game;
 import java.util.Scanner;
+
+import shared.pokemon.*;
+
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Random;
-
-import pokemon.*;
 
 public class Game {
     private static Pokemon pokemons[];
