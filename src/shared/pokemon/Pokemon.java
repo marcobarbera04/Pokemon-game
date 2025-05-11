@@ -1,9 +1,10 @@
 package shared.pokemon;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Pokemon{
+public class Pokemon implements Serializable{
     private String name;
     private double maxHp;
     private double hp;

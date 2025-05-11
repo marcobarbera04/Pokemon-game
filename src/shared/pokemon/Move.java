@@ -1,6 +1,8 @@
 package shared.pokemon;
 
-public abstract class Move{
+import java.io.Serializable;
+
+public abstract class Move implements Serializable{
     final private String name;
     final private double accuracy;
 

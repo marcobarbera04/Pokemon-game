@@ -1,4 +1,4 @@
-package serverSide;
+package serverSide.database;
 
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -8,8 +8,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 
 import shared.pokemon.Pokemon;
+import shared.data.GameData;
 import shared.pokemon.Move;
-import shared.rosters.PokemonRoster;
 
 public class DatabaseMySQL extends Database{
     private final String url;
@@ -53,12 +53,11 @@ public class DatabaseMySQL extends Database{
         return resultSet;
     }
 
-    public PokemonRoster retrivePokemonRoster(){
-        PokemonRoster pokemonRoster = new PokemonRoster();
-        
+    public ArrayList<Pokemon> retrivePokemons(){
         String query = "SELECT * FROM pokemons;";
         ResultSet resultSet = retriveResultSet(query);
-        
+        ArrayList<Pokemon> pokemons = new ArrayList<>();
+
         try{
             while(resultSet.next()){
                 //int id = resultSet.getInt("id");
@@ -70,12 +69,25 @@ public class DatabaseMySQL extends Database{
 
                 ArrayList<Move> moves = new ArrayList<>();
                 Pokemon pokemon = new Pokemon(name, hp, attack, defense, speed, moves);
-                pokemonRoster.list.add(pokemon);
+                pokemons.add(pokemon);
             }
         }catch(SQLException e){
             e.printStackTrace();
         }
+        return pokemons;
+    }
 
-        return pokemonRoster;
+    public ArrayList<Move> retriveMoves(){
+        ArrayList<Move> moves = new ArrayList<>();
+        return moves;
+    }
+
+    public GameData retriveGameData(){
+        GameData gameData = new GameData();
+
+        gameData.addPokemons(this.retrivePokemons());
+        gameData.addMoves(this.retriveMoves());
+
+        return gameData;
     }
 }

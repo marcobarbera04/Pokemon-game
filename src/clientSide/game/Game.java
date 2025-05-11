@@ -1,11 +1,13 @@
 package clientSide.game;
 import java.util.Scanner;
 
-import shared.pokemon.*;
-
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Random;
+
+import shared.pokemon.*;
+import shared.data.GameData;
+import clientSide.client.Client;
 
 public class Game {
     private static Pokemon pokemons[];
@@ -16,10 +18,11 @@ public class Game {
     private Random random = new Random();
     private Scanner scanner;
     private boolean hasPlayerWon;
+    private GameData gameData;
     
     public void initPokemons(){
+        /*
         pokemons = new Pokemon[3];
-        
         ArrayList<Move> pokemonMoves0 = new ArrayList<>();
         pokemonMoves0.add(new MoveDamage("Flamethrower", 75, 110));
         pokemonMoves0.add(new MoveDamage("Tackle", 100, 50));
@@ -32,9 +35,12 @@ public class Game {
         ArrayList<Move> pokemonMoves2 = new ArrayList<>();
         pokemonMoves2.add(new MoveDamage("Leaf blade", 75, 110));
         pokemons[2] = new Pokemon("Venusaur", 350, 25, 25, 25, pokemonMoves2);
+        */
     }
 
     public void run(){
+        Client client = new Client("localhost", 12345);
+        this.gameData = client.retriveGameData();
         this.initPokemons();
         scanner = new Scanner(System.in);
 

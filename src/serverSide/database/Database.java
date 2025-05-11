@@ -1,6 +1,10 @@
-package serverSide;
+package serverSide.database;
 
-import shared.rosters.PokemonRoster;
+import java.util.ArrayList;
+
+import shared.pokemon.Pokemon;
+import shared.pokemon.Move;
+import shared.data.GameData;
 
 public abstract class Database{
     private final String dbName;
@@ -30,5 +34,9 @@ public abstract class Database{
      * This abstract method should retrive all pokemons from the specified database
      * @return      the pokemon roster
      */
-    public abstract PokemonRoster retrivePokemonRoster();
+    public abstract ArrayList<Pokemon> retrivePokemons();
+
+    public abstract ArrayList<Move> retriveMoves();
+
+    public abstract GameData retriveGameData();
 }
