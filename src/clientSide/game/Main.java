@@ -1,5 +1,4 @@
-package clientSide.main;
-import clientSide.game.Game;
+package clientSide.game;
 
 public class Main {
     public static void main(String[] args){
