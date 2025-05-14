@@ -13,10 +13,28 @@ cd Pokemon-game
 
 Start the docker environment
 ```bash
-docker-compose -f /docker/docker-compose.yml up -d
+cd docker
+docker-compose -f docker-compose.yml up -d
 ```
 
-Import database
+Import database (you have to import using Git bash)
+
+Move to the repository
 ```bash
-docker exec -i mysql_pokemon mysql -u root < database/dump.sql
+cd path/to/Pokemon-game
+```
+
+Create the database
+```bash
+docker exec -i mysql_pokemon mysql -u root -e "CREATE DATABASE pokemon_game;"
+```
+
+Check if the database was created successfully
+```bash
+docker exec -it mysql_pokemon mysql -u root -e "SHOW DATABASES;"
+```
+
+Import the dump
+```bash
+docker exec -i mysql_pokemon mysql -u root pokemon_game < database/dump.sql
 ```
