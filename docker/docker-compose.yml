@@ -1,0 +1,28 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    container_name: mysql_pokemon
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+    volumes:
+      - pokemon_db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin_pokemon
+    restart: always
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: ""
+    ports:
+      - "8080:80"
+
+volumes:
+  pokemon_db_data:

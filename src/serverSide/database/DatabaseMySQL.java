@@ -7,9 +7,12 @@ import java.sql.SQLException;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 
-import shared.pokemon.Pokemon;
 import shared.data.GameData;
+import shared.pokemon.Pokemon;
 import shared.pokemon.Move;
+import shared.pokemon.MoveDamage;
+import shared.pokemon.MoveStatus;
+import shared.pokemon.Statistic;
 
 public class DatabaseMySQL extends Database{
     private final String url;
@@ -54,9 +57,9 @@ public class DatabaseMySQL extends Database{
     }
 
     public ArrayList<Pokemon> retrivePokemons(){
-        String query = "SELECT * FROM pokemons;";
-        ResultSet resultSet = retriveResultSet(query);
         ArrayList<Pokemon> pokemons = new ArrayList<>();
+        String query = "SELECT id, name, hp, attack, defense, speed FROM pokemons;";
+        ResultSet resultSet = retriveResultSet(query);
 
         try{
             while(resultSet.next()){
@@ -79,6 +82,32 @@ public class DatabaseMySQL extends Database{
 
     public ArrayList<Move> retriveMoves(){
         ArrayList<Move> moves = new ArrayList<>();
+        String query = "SELECT id, name, accuracy, move_type, power, statistic, percentage, self FROM moves;";
+        ResultSet resultSet = retriveResultSet(query);
+
+        try{
+            while(resultSet.next()){
+                Move move = null;
+                //int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                double accuracy = resultSet.getDouble("accuracy");
+                String move_type = resultSet.getString("move_type");
+                if(move_type.compareToIgnoreCase("damage") == 0){
+                    double power = resultSet.getDouble("power");
+                    move = new MoveDamage(name, accuracy, power);
+                }else
+                if(move_type.compareToIgnoreCase("status") == 0){
+                    Statistic statistic = Statistic.valueOf(resultSet.getString("statistic"));
+                    double percentage = resultSet.getDouble("percentage");
+                    boolean self = resultSet.getBoolean("self");
+                    move = new MoveStatus(name, accuracy, statistic, percentage, self);
+                }
+                moves.add(move);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        
         return moves;
     }
 

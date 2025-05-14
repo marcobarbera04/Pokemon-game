@@ -16,7 +16,10 @@ public class Server {
         DatabaseMySQL db = new DatabaseMySQL(dbName, user, password, url);
         
         GameData gameData = db.retriveGameData();
-        System.out.println("Pokemons loaded");
+        System.out.println("Pokemons retrived:");
+        gameData.printPokemons();
+        System.out.println("Moves retrived");
+        gameData.printMoves();
 
         int port = 12345;
         try(ServerSocket serverSocket = new ServerSocket(port)){

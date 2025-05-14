@@ -46,4 +46,19 @@ public final class GameData implements Serializable{
     public int movesSize(){
         return moves.size();
     }
+
+    // For debugging purpose (used on server)
+    public void printPokemons(){
+        if(pokemons == null){
+            throw new RuntimeException("Pokemons list is null");
+        }
+        System.out.println(pokemons);
+    }
+
+    public void printMoves(){
+        if(moves == null){
+            throw new RuntimeException("Moves list is null");
+        }
+        System.out.println(moves);
+    }
 }
