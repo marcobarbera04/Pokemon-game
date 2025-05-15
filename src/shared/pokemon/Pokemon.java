@@ -5,76 +5,104 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Pokemon implements Serializable{
-    private String name;
-    private double maxHp;
-    private double hp;
-    private double attack;
-    private double defense;
-    private double speed;
-    public static final int MAX_MOVES = 2;
+    private final int id;
+    private final String name;
+
+    private final double hp;
+    private final double attack;
+    private final double defense;
+    private final double speed;
+
+    private double actualHp;
+    private double actualAttack;
+    private double actualDefense;
+    private double actualSpeed;
+
+    public static final int MAX_MOVES = 4;
     private ArrayList<Move> moves;
 
-    public Pokemon(String name, double maxHp, double attack, double defense, double speed, ArrayList<Move> moves){
-        setName(name);
-        setMaxHp(maxHp);
-        this.hp = this.maxHp;
-        setAttack(attack);
-        setDefense(defense);
-        setSpeed(speed);
+    public Pokemon(int id, String name, double hp, double attack, double defense, double speed, ArrayList<Move> moves){
+        if(name == null){
+            throw new RuntimeException("Name is null");
+        }
+        if(hp <= 0 | attack <= 0 | defense <= 0 | speed <= 0){
+            throw new RuntimeException("Hp or Attack or Defense or Speed are not valid (less or equal than 0)");
+        }
+        if(moves == null){
+            throw new RuntimeException("Moves are null");
+        }
+        if(moves.size() > MAX_MOVES){
+            throw new RuntimeException("There can be a maximum of " + MAX_MOVES + " moves");
+        }
+        this.id = id;
+        this.name = name;
+
+        this.hp = hp;
+        this.attack = attack;
+        this.defense = defense;
+        this.speed = speed;
+
+        this.actualHp = hp;
+        this.actualAttack = attack;
+        this.actualDefense = defense;
+        this.actualSpeed = speed;
+
         this.moves = new ArrayList<>();
         setMoves(moves);
     }
 
     // getter methods
+    public int getId(){
+        return id;
+    }
     public String getName() {
         return name;
-    }
-    public double getMaxHp() {
-        return maxHp;
     }
     public double getHp() {
         return hp;
     }
+    public double getActualHp() {
+        return actualHp;
+    }
     public double getAttack() {
         return attack;
+    }
+    public double getActualAttack(){
+        return actualAttack;
     }
     public double getDefense() {
         return defense;
     }
+    public double getActualDefense(){
+        return actualDefense;
+    }
     public double getSpeed() {
         return speed;
+    }
+    public double getActualSpeed(){
+        return actualSpeed;
     }
     public ArrayList<Move> getMoves(){
         return this.moves;
     }
 
     // setter methods
-    public void setName(String name) {
-        if(name != null){
-            this.name = name;
-        }
+    public void setActualHp(double ActualHp) {
+        this.actualHp = ActualHp;
     }
-    public void setMaxHp(double maxHp) {
-        if(maxHp > 0){
-            this.maxHp = maxHp;
-        }
-    }
-    public void setHp(double hp) {
-        this.hp = hp;
-    }
-    public void setAttack(double attack) {
+    public void setActualAttack(double actualAttack) {
         if(attack > 0){
-            this.attack = attack;
+            this.actualAttack = actualAttack;
         }
     }
-    public void setDefense(double defense) {
+    public void setActualDefense(double actualDefense) {
         if(defense > 0){
-            this.defense = defense;
+            this.actualDefense = actualDefense;
         }
     }
-    public void setSpeed(double speed) {
+    public void setActualSpeed(double actualSpeed) {
         if(speed > 0){
-            this.speed = speed;
+            this.actualSpeed = actualSpeed;
         }
     }
     public void setMove(Move move){
@@ -119,8 +147,8 @@ public class Pokemon implements Serializable{
      * @return              the value of damage inflicted by the move
      */
     public static double calculateDamage(Pokemon attaccking, Pokemon defending, MoveDamage move){
-        double attack = attaccking.getAttack();
-        double defense = defending.getDefense();
+        double attack = attaccking.getActualAttack();
+        double defense = defending.getActualDefense();
         double power = move.getPower();
         double damage = ((attack * power) / defense) * 0.5;
         return damage;
@@ -145,7 +173,7 @@ public class Pokemon implements Serializable{
      * @return          a boolean value, true (pokemon is alive), false (pokemon is not alive)
      */
     public static boolean isAlive(Pokemon pokemon){
-        if(pokemon.getHp() <= 0){
+        if(pokemon.getActualHp() <= 0){
             return false;
         }
         else{
@@ -160,8 +188,8 @@ public class Pokemon implements Serializable{
      * @return      the faster pokemon
      */
     public static Pokemon getFastestPokemon(Pokemon p1, Pokemon p2){
-        double p1Speed = p1.getSpeed();
-        double p2Speed = p2.getSpeed();
+        double p1Speed = p1.getActualSpeed();
+        double p2Speed = p2.getActualSpeed();
         if(p2Speed > p1Speed){
             return p2;
         }

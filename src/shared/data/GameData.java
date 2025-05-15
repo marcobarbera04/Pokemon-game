@@ -15,6 +15,10 @@ public final class GameData implements Serializable{
         moves = new ArrayList<>();
     }
 
+    public Pokemon getPokemon(int i){
+        return pokemons.get(i);
+    }
+
     public void addPokemon(Pokemon pokemon){
         if(pokemon != null){
             pokemons.add(pokemon);

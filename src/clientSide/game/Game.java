@@ -1,7 +1,6 @@
 package clientSide.game;
 import java.util.Scanner;
 
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Random;
 
@@ -21,21 +20,10 @@ public class Game {
     private GameData gameData;
     
     public void initPokemons(){
-        /*
-        pokemons = new Pokemon[3];
-        ArrayList<Move> pokemonMoves0 = new ArrayList<>();
-        pokemonMoves0.add(new MoveDamage("Flamethrower", 75, 110));
-        pokemonMoves0.add(new MoveDamage("Tackle", 100, 50));
-        pokemons[0] = new Pokemon("Charizard", 350, 25, 25, 1, pokemonMoves0);
-
-        ArrayList<Move> pokemonMoves1 = new ArrayList<>();
-        pokemonMoves1.add(new MoveDamage("Idropulsar", 75, 110));
-        pokemons[1] = new Pokemon("Blastoise", 350, 25, 25, 25, pokemonMoves1);
-
-        ArrayList<Move> pokemonMoves2 = new ArrayList<>();
-        pokemonMoves2.add(new MoveDamage("Leaf blade", 75, 110));
-        pokemons[2] = new Pokemon("Venusaur", 350, 25, 25, 25, pokemonMoves2);
-        */
+        pokemons = new Pokemon[gameData.pokemonsSize()];
+        for(int i = 0; i < pokemons.length; i++){
+            pokemons[i] = gameData.getPokemon(i);
+        }
     }
 
     public void run(){
@@ -67,7 +55,7 @@ public class Game {
      * This method handles all of the game logic
      */
     public void match(){
-        while (playerPokemon.getHp() > 0 && enemyPokemon.getHp() > 0) {
+        while (playerPokemon.getActualHp() > 0 && enemyPokemon.getActualHp() > 0) {
             showMenu();     // Show the menu with player pokemon, enemy pokemon and moves
 
             Move playerMove = playerChooseMove();   
@@ -109,8 +97,8 @@ public class Game {
      * Player pokemon moves
      */
     public void showMenu(){
-        double playerHp = playerPokemon.getHp();
-        double enemyHp = enemyPokemon.getHp();
+        double playerHp = playerPokemon.getActualHp();
+        double enemyHp = enemyPokemon.getActualHp();
 
         // if one of the pokemon is not alive set its hp to 0 to avoid showing negative value for hp
         if(!Pokemon.isAlive(playerPokemon)){
@@ -225,7 +213,7 @@ public class Game {
     public void attack(Pokemon attacking, Pokemon defending, MoveDamage move){
         if(Pokemon.doesHit(move)){
             double damage = Pokemon.calculateDamage(attacking, defending, move);
-            defending.setHp(defending.getHp() - damage);
+            defending.setActualHp(defending.getActualHp() - damage);
             System.out.println(attacking.getName() + " successfully uses " + move.getName());
             simulateWait();
         }

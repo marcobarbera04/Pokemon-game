@@ -3,10 +3,11 @@ package shared.pokemon;
 import java.io.Serializable;
 
 public abstract class Move implements Serializable{
+    final private int id;
     final private String name;
     final private double accuracy;
 
-    public Move(String name, double accuracy){
+    public Move(int id, String name, double accuracy){
         if(name == null){
             throw new RuntimeException("[ERROR]: Move name cannot be null");
         }
@@ -14,6 +15,7 @@ public abstract class Move implements Serializable{
             throw new RuntimeException("[ERROR]: Move precision must be positive (move name: " + name + ")");
         }
 
+        this.id = id;
         this.name = name;
         this.accuracy = accuracy;
     }
@@ -24,6 +26,9 @@ public abstract class Move implements Serializable{
     }
 
     // getter methods
+    public int getId(){
+        return id;
+    }
     public String getName(){
         return name;
     }

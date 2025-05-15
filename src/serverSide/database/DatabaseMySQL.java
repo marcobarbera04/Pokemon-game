@@ -56,30 +56,6 @@ public class DatabaseMySQL extends Database{
         return resultSet;
     }
 
-    public ArrayList<Pokemon> retrivePokemons(){
-        ArrayList<Pokemon> pokemons = new ArrayList<>();
-        String query = "SELECT id, name, hp, attack, defense, speed FROM pokemons;";
-        ResultSet resultSet = retriveResultSet(query);
-
-        try{
-            while(resultSet.next()){
-                //int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                double hp = resultSet.getDouble("hp");
-                double attack = resultSet.getDouble("attack");
-                double defense = resultSet.getDouble("defense");
-                double speed = resultSet.getDouble("speed");
-
-                ArrayList<Move> moves = new ArrayList<>();
-                Pokemon pokemon = new Pokemon(name, hp, attack, defense, speed, moves);
-                pokemons.add(pokemon);
-            }
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-        return pokemons;
-    }
-
     public ArrayList<Move> retriveMoves(){
         ArrayList<Move> moves = new ArrayList<>();
         String query = "SELECT id, name, accuracy, move_type, power, statistic, percentage, self FROM moves;";
@@ -88,19 +64,19 @@ public class DatabaseMySQL extends Database{
         try{
             while(resultSet.next()){
                 Move move = null;
-                //int id = resultSet.getInt("id");
+                int id = resultSet.getInt("id");
                 String name = resultSet.getString("name");
                 double accuracy = resultSet.getDouble("accuracy");
                 String move_type = resultSet.getString("move_type");
                 if(move_type.compareToIgnoreCase("damage") == 0){
                     double power = resultSet.getDouble("power");
-                    move = new MoveDamage(name, accuracy, power);
+                    move = new MoveDamage(id, name, accuracy, power);
                 }else
                 if(move_type.compareToIgnoreCase("status") == 0){
                     Statistic statistic = Statistic.valueOf(resultSet.getString("statistic"));
                     double percentage = resultSet.getDouble("percentage");
                     boolean self = resultSet.getBoolean("self");
-                    move = new MoveStatus(name, accuracy, statistic, percentage, self);
+                    move = new MoveStatus(id, name, accuracy, statistic, percentage, self);
                 }
                 moves.add(move);
             }
@@ -109,6 +85,63 @@ public class DatabaseMySQL extends Database{
         }
         
         return moves;
+    }
+
+    public ArrayList<Move> retrivePokemonMoves(int idPokemon){
+        ArrayList<Move> moves = new ArrayList<>();
+        String query = "SELECT moves.id, name, accuracy, move_type, power, statistic, percentage, self FROM pokemon_moves " +
+                        "JOIN moves ON pokemon_moves.move_id = moves.id " +
+                        "WHERE pokemon_id = " + idPokemon + ";";
+        ResultSet resultSet = retriveResultSet(query);
+
+        try{
+            while(resultSet.next()){
+                Move move = null;
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                double accuracy = resultSet.getDouble("accuracy");
+                String move_type = resultSet.getString("move_type");
+                if(move_type.compareToIgnoreCase("damage") == 0){
+                    double power = resultSet.getDouble("power");
+                    move = new MoveDamage(id, name, accuracy, power);
+                }else
+                if(move_type.compareToIgnoreCase("status") == 0){
+                    Statistic statistic = Statistic.valueOf(resultSet.getString("statistic"));
+                    double percentage = resultSet.getDouble("percentage");
+                    boolean self = resultSet.getBoolean("self");
+                    move = new MoveStatus(id, name, accuracy, statistic, percentage, self);
+                }
+                moves.add(move);  
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        
+        return moves;
+    }
+
+    public ArrayList<Pokemon> retrivePokemons(){
+        ArrayList<Pokemon> pokemons = new ArrayList<>();
+        String query = "SELECT id, name, hp, attack, defense, speed FROM pokemons;";
+        ResultSet resultSet = retriveResultSet(query);
+
+        try{
+            while(resultSet.next()){
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                double hp = resultSet.getDouble("hp");
+                double attack = resultSet.getDouble("attack");
+                double defense = resultSet.getDouble("defense");
+                double speed = resultSet.getDouble("speed");
+
+                ArrayList<Move> moves = retrivePokemonMoves(id);
+                Pokemon pokemon = new Pokemon(id, name, hp, attack, defense, speed, moves);
+                pokemons.add(pokemon);
+            }
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return pokemons;
     }
 
     public GameData retriveGameData(){
