@@ -155,6 +155,55 @@ public class Pokemon implements Serializable{
     }
 
     /**
+     * This static method calculate the statistic affection of a MoveStatus and apply it
+     * to the target statistic if it would stay above 0, if the move do not affect the statistic
+     * the method will return false, otherwise the method will return true
+     * @param   pokemon the attacking pokemon
+     * @param   move    the defending pokemon
+     * @return          a flag that determines whether the move affects the statistics
+     */
+    public static boolean affectStatistic(Pokemon pokemon, MoveStatus move){
+        boolean didAffect = false;
+        double percentage = move.getPercentage();
+        double affectionValue = 0;
+
+        switch(move.getStatistic()){
+            case ATTACK:
+                double actualAttack = pokemon.getActualAttack();
+                affectionValue = actualAttack * (percentage / 100);
+                double newAttack = actualAttack + affectionValue;
+                if(newAttack > 0){
+                    didAffect = true;
+                    pokemon.setActualAttack(newAttack);
+                }
+                break;
+            case DEFENSE:
+                double actualDefense = pokemon.getActualDefense();
+                affectionValue = actualDefense * (percentage / 100);
+                double newDefense = actualDefense + affectionValue;
+                if(newDefense > 0){
+                    didAffect = true;
+                    pokemon.setActualDefense(newDefense);
+                }
+                break;
+            case SPEED:
+                double actualSpeed = pokemon.getActualSpeed();
+                affectionValue = actualSpeed * (percentage / 100);
+                double newSpeed = actualSpeed + affectionValue;
+                if(newSpeed > 0){
+                    didAffect = true;
+                    pokemon.setActualSpeed(newSpeed);
+                }
+                break;
+            default:
+                System.out.println("Invalid statistic type!");
+                return false;
+        }
+
+        return didAffect;
+    }
+
+    /**
      * This static method check if a move does hit based on its accuracy
      * @param   move    the executed move  
      * @return          a boolean value, true (it does hit), false (it does not hit)

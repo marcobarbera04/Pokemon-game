@@ -109,8 +109,8 @@ public class Game {
         }
 
         System.out.println("----------------------------------------------------------------------------------");
-        System.out.println(enemyPokemon + ": " + enemyHp + " hp\n\n\n\n\n");
-        System.out.println("\t\t\t\t\t\t\t\t" + playerPokemon + ": " + playerHp + " hp");
+        System.out.println(String.format("%s: %.1f hp\n\n\n\n\n", enemyPokemon.getName(), enemyHp));
+        System.out.println(String.format("\t\t\t\t\t\t\t\t%s: %.1f hp", playerPokemon.getName(), playerHp));
         playerPokemon.showMoves();
         System.out.println("----------------------------------------------------------------------------------");
     }
@@ -208,7 +208,7 @@ public class Game {
      * This method allows a pokemon to perform an attack (MoveDamage)
      * @param   attacking   the pokemon that is attacking 
      * @param   defending   the pokemon that is defending
-     * @param   move        the move (MoveDamage) that is going to be executed
+     * @param   move        the move (MoveDamage) that is going to be used
      */
     public void attack(Pokemon attacking, Pokemon defending, MoveDamage move){
         if(Pokemon.doesHit(move)){
@@ -223,31 +223,41 @@ public class Game {
         }
     }
 
+    /**
+     * This method allows a pokemon to perform an attack that reduces a statistic (MoveStatus)
+     * A pokemon can use a move that self affects its statistic, for example Tail Whip
+     * that increases a pokemon's own defense statistic
+     * @param   attacking   the pokemon that is attacking
+     * @param   defending   the pokemon that is defending
+     * @param   move        the move (MoveStatus) that is going to be used
+     */
     public void attackStatus(Pokemon attacking, Pokemon defending, MoveStatus move){
-        //throw new RuntimeException("not implemented yet");
-
-        if(Pokemon.doesHit(move)){
-            switch (move.getStatistic()) {
-                case ATTACK:
-                    affectAttack(attacking, defending, move);
-                    break;
-                case DEFENSE:
-                    affectDefense(attacking, defending, move);
-                    break;
-                case SPEED:
-                    affectSpeed(attacking, defending, move);
-                    break;
-                default:
-                    break;
-                }
+        if(!Pokemon.doesHit(move)){
+            System.out.println(attacking.getName() + " failed to use " + move.getName());
+            simulateWait();
+            return;
         }
+
+        System.out.println(attacking.getName() + " successfully uses " + move.getName());
+        simulateWait();
+
+        String action = move.getPercentage() > 0 ? "increases" : "decreases";
+        if(move.isSelfAffected()){
+            if(Pokemon.affectStatistic(attacking, move)){
+                System.out.println(attacking.getName() + " " + action + " its own " + move.getStatistic().name());  
+            }else{
+                System.out.println(attacking.getName() + "'s " + move.getStatistic().name() + " remains unchanged!");
+            }
+        }else
+        if(!move.isSelfAffected()){
+            if(Pokemon.affectStatistic(defending, move)){
+                System.out.println(attacking.getName() + " " + action + " " + defending.getName() + "'s " + move.getStatistic().name());
+            }else{
+                System.out.println(defending.getName() + "'s " + move.getStatistic().name() + " remains unchanged!");
+            }
+        }
+        simulateWait();
     }
-
-    public void affectAttack(Pokemon attacking, Pokemon defending, MoveStatus move){throw new RuntimeException("Not implemented yet");}
-
-    public void affectDefense(Pokemon attacking, Pokemon defending, MoveStatus move){throw new RuntimeException("Not implemented yet");}
-
-    public void affectSpeed(Pokemon attacking, Pokemon defending, MoveStatus move){throw new RuntimeException("Not implemented yet");}
 
     /**
      * Simulate waiting for enemy to choose a move or loadings 

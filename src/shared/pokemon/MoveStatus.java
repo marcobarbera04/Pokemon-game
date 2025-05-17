@@ -11,7 +11,7 @@ public class MoveStatus extends Move {
         if(statistic == null){
             throw new RuntimeException("[ERROR]: MoveStatus statistic is invalid (move name: " + name + ")");
         }
-        if(percentage <= 0 || percentage > 100){
+        if(percentage == 0 || percentage >= 100 || percentage <= -100){
             throw new RuntimeException("[ERROR]: MoveStatus percentage is invalid (move name: " + name + ")");
         }
         this.statistic = statistic;
