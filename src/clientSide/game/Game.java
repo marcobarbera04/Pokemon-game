@@ -224,8 +224,30 @@ public class Game {
     }
 
     public void attackStatus(Pokemon attacking, Pokemon defending, MoveStatus move){
-        throw new RuntimeException("not implemented yet");
+        //throw new RuntimeException("not implemented yet");
+
+        if(Pokemon.doesHit(move)){
+            switch (move.getStatistic()) {
+                case ATTACK:
+                    affectAttack(attacking, defending, move);
+                    break;
+                case DEFENSE:
+                    affectDefense(attacking, defending, move);
+                    break;
+                case SPEED:
+                    affectSpeed(attacking, defending, move);
+                    break;
+                default:
+                    break;
+                }
+        }
     }
+
+    public void affectAttack(Pokemon attacking, Pokemon defending, MoveStatus move){throw new RuntimeException("Not implemented yet");}
+
+    public void affectDefense(Pokemon attacking, Pokemon defending, MoveStatus move){throw new RuntimeException("Not implemented yet");}
+
+    public void affectSpeed(Pokemon attacking, Pokemon defending, MoveStatus move){throw new RuntimeException("Not implemented yet");}
 
     /**
      * Simulate waiting for enemy to choose a move or loadings 
