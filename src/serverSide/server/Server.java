@@ -6,13 +6,18 @@ import java.net.ServerSocket;
 
 import serverSide.database.DatabaseMySQL;
 import shared.data.GameData;
+import shared.xmlParser.XMLParser;
 
 public class Server {
     public static void main(String[] args){
-        String dbName = "pokemon_game";
-        String user = "root";
-        String password = "";
-        String url = "jdbc:mysql://localhost:3306/pokemon_game";
+        // Load configuration for database connection
+        XMLParser parser = new XMLParser("src/serverSide/server/config.xml");
+        String dbName = parser.getValue("database", "dbName");
+        String user = parser.getValue("database", "user");
+        String password = parser.getValue("database", "password");
+        String addres = parser.getValue("database", "address");
+        String port = parser.getValue("database", "port");
+        String url = "jdbc:mysql://" + addres + ":" + port + "/" + dbName;
         DatabaseMySQL db = new DatabaseMySQL(dbName, user, password, url);
         
         GameData gameData = db.retriveGameData();
@@ -21,9 +26,9 @@ public class Server {
         System.out.println("Moves retrived");
         gameData.printMoves();
 
-        int port = 12345;
-        try(ServerSocket serverSocket = new ServerSocket(port)){
-            System.out.println("Listening on port " + port);
+        int serverPort = 12345;
+        try(ServerSocket serverSocket = new ServerSocket(serverPort)){
+            System.out.println("Listening on port " + serverPort);
             while(true){
                 Socket client = serverSocket.accept();
                 System.out.println("New client connected");

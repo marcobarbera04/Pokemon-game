@@ -6,6 +6,7 @@ import java.util.Random;
 
 import shared.pokemon.*;
 import shared.data.GameData;
+import shared.xmlParser.XMLParser;
 import clientSide.client.Client;
 
 public class Game {
@@ -27,7 +28,12 @@ public class Game {
     }
 
     public void run(){
-        Client client = new Client("localhost", 12345);
+        // Load configuration for server connection
+        XMLParser parser = new XMLParser("src/clientSide/client/config.xml");
+        String serverAddress = parser.getValue("server", "address");
+        int port = Integer.parseInt(parser.getValue("server", "port"));
+        Client client = new Client(serverAddress, port);
+        
         this.gameData = client.retriveGameData();
         this.initPokemons();
         scanner = new Scanner(System.in);
